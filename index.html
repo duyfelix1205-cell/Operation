@@ -4,40 +4,351 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HPz Operation — Web vận hành nội bộ</title>
-<meta name="description" content="Web vận hành nội bộ Showroom HPz: Cẩm nang vận hành và Bộ nội quy nội bộ.">
+<meta name="description" content="Web vận hành nội bộ Showroom HPz: Cẩm nang vận hành và Bộ nội quy nội bộ đầy đủ 20 điều.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--teal:#0e7490;--teal-dark:#155e75;--ink:#0f172a;--line:#e2e8f0}
+:root{--teal:#0e7490;--teal-dark:#155e75;--teal-light:#ecfeff;--ink:#0f172a;--muted:#475569;--line:#e2e8f0;--bg:#f8fafc;--card:#ffffff}
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
-body{font-family:'Be Vietnam Pro',system-ui,sans-serif;display:flex;flex-direction:column;background:#f8fafc}
-header{display:flex;align-items:center;flex-wrap:wrap;gap:8px 18px;background:linear-gradient(90deg,var(--teal-dark),var(--teal));padding:10px 18px;box-shadow:0 2px 10px rgba(2,48,71,.25);position:sticky;top:0;z-index:10}
+body{font-family:'Be Vietnam Pro',system-ui,sans-serif;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);line-height:1.7}
+header.topbar{display:flex;align-items:center;flex-wrap:wrap;gap:8px 18px;background:linear-gradient(90deg,var(--teal-dark),var(--teal));padding:10px 18px;box-shadow:0 2px 10px rgba(2,48,71,.25);position:relative;z-index:20}
 .brand{color:#fff;font-weight:800;font-size:1.05rem;letter-spacing:.5px;margin-right:8px}
 nav.tabs{display:flex;gap:6px;flex-wrap:wrap}
-nav.tabs a{color:#e0f2fe;text-decoration:none;font-weight:600;font-size:.9rem;padding:8px 16px;border-radius:999px;border:1.5px solid transparent;transition:.15s}
+nav.tabs a{color:#e0f2fe;text-decoration:none;font-weight:600;font-size:.9rem;padding:8px 16px;border-radius:999px;border:1.5px solid transparent;transition:.15s;cursor:pointer}
 nav.tabs a:hover{background:rgba(255,255,255,.12)}
 nav.tabs a.active{background:#fff;color:var(--teal-dark);border-color:#fff}
-iframe{flex:1;width:100%;border:0;background:#fff}
+main{flex:1;position:relative;overflow:hidden}
+.view{position:absolute;inset:0;display:none}
+.view.active{display:block}
+#view-handbook iframe{width:100%;height:100%;border:0;background:#fff;display:block}
+#view-noiquy{overflow-y:auto}
+.hero{background:linear-gradient(135deg,var(--teal-dark),var(--teal));color:#fff;padding:42px 20px 38px;text-align:center}
+.hero h1{font-size:clamp(1.4rem,3.5vw,2.2rem);font-weight:800;letter-spacing:.5px}
+.hero .date{margin-top:10px;font-size:.95rem;opacity:.85}
+.quicknav{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:22px auto 26px;max-width:920px;padding:0 16px}
+.quicknav a{background:var(--card);border:1px solid var(--line);color:var(--teal-dark);text-decoration:none;font-size:.8rem;font-weight:600;padding:6px 12px;border-radius:999px;box-shadow:0 2px 8px rgba(2,48,71,.06);transition:.15s}
+.quicknav a:hover{border-color:var(--teal);background:var(--teal-light)}
+.wrap{max-width:960px;margin:0 auto;padding:0 18px 56px}
+section.dieu{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 26px 22px;margin-bottom:20px;box-shadow:0 2px 10px rgba(2,48,71,.05)}
+section.dieu h2{color:var(--teal-dark);font-size:1.15rem;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--teal-light)}
+section.dieu ol{padding-left:22px}
+section.dieu ol li{margin-bottom:8px}
+section.dieu ul{padding-left:22px}
+section.dieu ul li{margin-bottom:8px}
+section.dieu p.note{margin-top:14px;background:var(--teal-light);border-left:4px solid var(--teal);padding:12px 16px;border-radius:0 10px 10px 0;font-size:.92rem;color:var(--teal-dark)}
+table{width:100%;border-collapse:collapse;margin:14px 0 6px;font-size:.9rem}
+th{background:var(--teal-dark);color:#fff;text-align:left;padding:10px 12px;font-weight:600}
+td{border:1px solid var(--line);padding:10px 12px;vertical-align:top;background:#fff}
+tr:nth-child(even) td{background:#f8fafc}
+.c1 td:first-child{font-weight:700;color:var(--teal-dark);white-space:nowrap}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:22px 16px 36px}
+@media(max-width:640px){section.dieu{padding:18px 16px}th,td{padding:8px;font-size:.84rem}}
 </style>
 </head>
 <body>
-<header>
+<header class="topbar">
 <span class="brand">HPz Operation</span>
 <nav class="tabs">
-<a id="tab-handbook" class="active" href="hpz-aquarium-care.html" target="content">Cẩm nang vận hành</a>
-<a id="tab-noiquy" href="hpz-noi-quy.html" target="content">Nội quy Showroom</a>
+<a id="tab-handbook" class="active">Cẩm nang vận hành</a>
+<a id="tab-noiquy">Nội quy Showroom</a>
 </nav>
 </header>
-<iframe name="content" id="content" src="hpz-aquarium-care.html" title="Nội dung HPz Operation"></iframe>
+<main>
+<div id="view-handbook" class="view active">
+<iframe src="hpz-aquarium-care.html" title="Cẩm nang vận hành HPz"></iframe>
+</div>
+<div id="view-noiquy" class="view">
+<div class="hero">
+<h1>BỘ NỘI QUY NỘI BỘ SHOWROOM HPz</h1>
+<p class="date">Hà Nội, ngày 07 tháng 09 năm 2026 — Áp dụng cho toàn bộ nhân sự Showroom HPz</p>
+</div>
+<nav class="quicknav">
+<a href="#d1">1. Mục tiêu</a><a href="#d2">2. Đối tượng</a><a href="#d3">3. Trách nhiệm</a><a href="#d4">4. Lịch & chấm công</a><a href="#d5">5. Tác phong</a><a href="#d6">6. Phục vụ KH</a><a href="#d7">7. Chăm sóc cá</a><a href="#d8">8. Vệ sinh</a><a href="#d9">9. An toàn điện/nước</a><a href="#d10">10. Hóa chất</a><a href="#d11">11. Kho & tài sản</a><a href="#d12">12. Báo cáo</a><a href="#d13">13. Bảo mật</a><a href="#d14">14. Nghiêm cấm</a><a href="#d15">15. Phân loại VP</a><a href="#d16">16. Xử lý VP</a><a href="#d17">17. Chế tài</a><a href="#d18">18. Khen thưởng</a><a href="#d19">19. Phản ánh</a><a href="#d20">20. Đào tạo</a>
+</nav>
+<div class="wrap">
+
+<section class="dieu" id="d1">
+<h2>Điều 1. Mục tiêu và giá trị chung</h2>
+<ol>
+<li>Xây dựng showroom cá cảnh chuyên nghiệp, an toàn, trung thực và có khả năng truy xuất trách nhiệm.</li>
+<li>Bảo vệ sức khỏe cá, chất lượng nước, tài sản, dữ liệu, hình ảnh thương hiệu và trải nghiệm khách hàng.</li>
+<li>Mỗi nhân sự thực hiện nguyên tắc &ldquo;thấy việc — làm việc — báo cáo — lưu vết&rdquo;.</li>
+<li>Không đánh đổi an toàn của cá, con người, thiết bị hoặc uy tín thương hiệu để hoàn thành nhanh một công việc.</li>
+<li>Nhân sự được khuyến khích phát hiện lỗi, báo sớm và đề xuất cải tiến; việc báo lỗi trung thực không bị xem tương đương với hành vi che giấu lỗi.</li>
+</ol>
+<p class="note">Các nguyên tắc trên kế thừa định hướng trong tài liệu nội bộ &ldquo;Nhân Viên Vận Hành (Offline).xlsx&rdquo;, trong đó nhấn mạnh trách nhiệm, trung thực, chủ động, tôn trọng khách hàng và tuân thủ checklist, todo list, bàn giao và báo cáo.</p>
+</section>
+
+<section class="dieu" id="d2">
+<h2>Điều 2. Đối tượng và phạm vi</h2>
+<p style="margin-bottom:8px">Nội quy áp dụng cho:</p>
+<ul>
+<li>Nhân viên vận hành/bán hàng toàn thời gian và bán thời gian.</li>
+<li>Nhân viên kỹ thuật phần cứng, kỹ thuật phần lõi và nhân sự đang học việc.</li>
+<li>Nhân sự kho, đóng gói, giao nhận, chăm sóc khách hàng và cộng tác viên khi làm việc tại showroom.</li>
+<li>Quản lý cửa hàng, quản lý ca, cửa hàng phó và người được ủy quyền.</li>
+<li>Khách, nhà cung cấp, đối tác và người bên ngoài khi được phép vào khu vực nội bộ: phải tuân thủ hướng dẫn an toàn của showroom.</li>
+</ul>
+</section>
+
+<section class="dieu" id="d3">
+<h2>Điều 3. Cơ cấu trách nhiệm</h2>
+<table>
+<tr><th>Vai trò</th><th>Trách nhiệm chính</th><th>Quyền hạn tối thiểu</th></tr>
+<tr><td>Cửa hàng trưởng</td><td>Ban hành phân công, kiểm tra, phê duyệt xử lý vi phạm và sự cố</td><td>Điều phối ca, yêu cầu báo cáo, tạm dừng hoạt động rủi ro</td></tr>
+<tr><td>Quản lý ca</td><td>Điều hành ca, kiểm tra checklist, tiếp nhận bàn giao</td><td>Phân việc trong ca, yêu cầu khắc phục ngay</td></tr>
+<tr><td>NVKT phần lõi</td><td>Kiểm soát cá, bệnh, chất lượng nước và bể cách ly</td><td>Chỉ định đo, cách ly, thay nước, điều trị theo thẩm quyền</td></tr>
+<tr><td>NVKT phần cứng</td><td>Kiểm soát bơm, lọc, ống, điện, sưởi và chống tràn</td><td>Cô lập thiết bị, sửa chữa hoặc yêu cầu dừng hệ thống</td></tr>
+<tr><td>NVVH/NVBH</td><td>Bán hàng, vệ sinh, cho ăn, quan sát, checklist và báo sự cố</td><td>Chỉ thực hiện thao tác đã được đào tạo</td></tr>
+<tr><td>Nhân sự kho</td><td>Nhập, kiểm đếm, bảo quản, dưỡng và xuất hàng theo phân quyền</td><td>Tạm giữ hàng có dấu hiệu lỗi để báo quản lý</td></tr>
+</table>
+<p class="note">Không nhân sự nào được tự ý mở rộng quyền hạn chỉ vì thiếu người trong ca. Khi không chắc chắn, phải dừng thao tác và gọi người có thẩm quyền.</p>
+</section>
+
+<section class="dieu" id="d4">
+<h2>Điều 4. Lịch làm việc và chấm công</h2>
+<ol>
+<li>Nhân sự có trách nhiệm đăng ký ca, đi làm đúng giờ và sẵn sàng nhận bàn giao khi bắt đầu ca.</li>
+<li>Mọi yêu cầu đổi ca, nghỉ, đi muộn hoặc về sớm phải báo trước qua kênh chính thức và được quản lý xác nhận, trừ trường hợp khẩn cấp.</li>
+<li>Nhân sự đến ca phải đọc checklist, todo list, note bể bệnh, đơn hàng ưu tiên và sự cố chưa đóng.</li>
+<li>Không tự ý bỏ vị trí khi showroom đang có khách hoặc khi chưa bàn giao các bể/thiết bị đang phụ trách.</li>
+<li>Khi buộc phải rời vị trí, phải báo quản lý ca và chỉ rõ công việc đang dở.</li>
+<li>Chấm công, báo cáo giờ làm và tình trạng hoàn thành phải trung thực; nghiêm cấm chấm công hộ hoặc xác nhận khống.</li>
+<li>Việc đánh giá hiệu suất, bậc lương và thưởng phải dựa trên tiêu chí đã công bố, dữ liệu checklist và chất lượng thực tế; không dùng nội quy để cắt lương trái quy định pháp luật.</li>
+</ol>
+</section>
+
+<section class="dieu" id="d5">
+<h2>Điều 5. Tác phong và hình ảnh</h2>
+<ol>
+<li>Mặc trang phục sạch, gọn, phù hợp môi trường showroom; sử dụng đồng phục hoặc thẻ tên khi được yêu cầu.</li>
+<li>Giữ vệ sinh cá nhân, rửa tay sau khi thao tác với nước bể, cá bệnh, hóa chất hoặc rác sinh học.</li>
+<li>Không hút thuốc, sử dụng chất kích thích, gây mất trật tự hoặc ngủ trong thời gian làm việc.</li>
+<li>Không ăn uống tại khu kỹ thuật, khu bể, khu kho hoặc trước mặt khách; chỉ ăn tại khu vực được bố trí.</li>
+<li>Điện thoại cá nhân chỉ sử dụng ở mức cần thiết; không dùng điện thoại khi đang thao tác thay nước, bắt cá, xử lý điện hoặc tiếp khách.</li>
+<li>Không đùa nghịch, xô đẩy, chạy nhảy quanh bể, xô nước, ổ điện, sưởi hoặc thiết bị dễ vỡ.</li>
+<li>Giữ thái độ bình tĩnh, lịch sự, hợp tác; không tranh cãi, xúc phạm, đe dọa hoặc nói xấu đồng nghiệp/khách hàng tại nơi làm việc.</li>
+</ol>
+</section>
+
+<section class="dieu" id="d6">
+<h2>Điều 6. Quy tắc phục vụ khách hàng</h2>
+<ol>
+<li>Chủ động chào khách, lắng nghe nhu cầu và tư vấn trung thực theo kiến thức được đào tạo.</li>
+<li>Không cam kết về sức khỏe cá, tỷ lệ sống, bảo hành, vận chuyển, giá hoặc thời gian giao hàng ngoài phạm vi được phân quyền.</li>
+<li>Không tự ý giảm giá, đổi hàng, giữ hàng, tặng sản phẩm hoặc sửa điều khoản bảo hành.</li>
+<li>Không tranh khách, giành đơn, nói xấu nhân sự khác hoặc nhà cung cấp trước mặt khách.</li>
+<li>Không chụp, đăng hoặc gửi hình ảnh khách hàng, đơn hàng, địa chỉ, số điện thoại hoặc thông tin thanh toán khi chưa được phép.</li>
+<li>Khi khách phản ánh hoặc khiếu nại, nhân sự phải lắng nghe, ghi nhận và chuyển case theo quy trình CSKH/bảo hành; không tranh luận về lỗi khi chưa có dữ liệu.</li>
+<li>Mọi thông tin tư vấn đặc thù về bệnh cá, thuốc, liều lượng và điều kiện nước phải chuyển NVKT xác nhận.</li>
+</ol>
+</section>
+
+<section class="dieu" id="d7">
+<h2>Điều 7. Nội quy chăm sóc và bảo vệ cá</h2>
+<ol>
+<li>Cho ăn đúng bể, đúng loại, đúng lượng và đúng lịch; không cho ăn bù khi chưa có chỉ đạo.</li>
+<li>Không cho ăn tại bể có note &ldquo;ngừng cho ăn&rdquo;, bể đang điều trị hoặc bể được yêu cầu nhịn.</li>
+<li>Mọi cá chết, cá yếu, cá chuyển bể hoặc cá có dấu hiệu bệnh phải được báo ngay, ghi đúng số lượng và mã bể.</li>
+<li>Không tự ý bắt, chuyển, trộn hoặc thả cá mới vào bể thương mại/bể trưng bày.</li>
+<li>Không dùng chung vợt, xô, ống, mút hoặc dụng cụ giữa bể khỏe và bể bệnh nếu chưa xử lý theo SOP.</li>
+<li>Không tự ý thêm thuốc, xanh methylen, thuốc tím, muối, vi sinh, kháng sinh hoặc hóa chất khác.</li>
+<li>Khi phát hiện cá bất thường, phải ưu tiên bảo vệ cá còn sống, giữ nguyên hiện trạng, báo NVKT và ghi nhận dữ liệu.</li>
+<li>Không vứt cá chết, đổ nước bể bệnh hoặc xử lý xác cá trước khi hoàn thành việc đếm, chụp ảnh và báo cáo, trừ trường hợp có nguy cơ an toàn sinh học hoặc mùi nghiêm trọng theo chỉ đạo quản lý.</li>
+</ol>
+<p class="note">Quarantine và phân khu dụng cụ là biện pháp kiểm soát rủi ro quan trọng trong kinh doanh cá cảnh; cá mới hoặc cá bệnh có thể mang mầm bệnh vào hệ thống cũ, nên nhân sự phải tuân thủ khu cách ly và dụng cụ riêng.</p>
+</section>
+
+<section class="dieu" id="d8">
+<h2>Điều 8. Nội quy vệ sinh bể và showroom</h2>
+<ol>
+<li>Thực hiện vệ sinh theo thứ tự từ ngoài vào trong, từ sạch đến bẩn và theo đúng checklist.</li>
+<li>Hoàn thành công việc từng bể trước khi chuyển sang bể kế tiếp.</li>
+<li>Lau kính ngoài, sàn, giàn, bàn tiếp khách, kho, nhà vệ sinh và khu kỹ thuật theo phân công từng ca.</li>
+<li>Không để nước đọng, rác, thức ăn thừa, bông lọc bẩn, xác cá chết hoặc vật tư chắn lối đi qua đêm.</li>
+<li>Dùng đúng ống cấp và ống thoát; không đổi mục đích sử dụng hoặc dùng lẫn khi chưa được phép.</li>
+<li>Không dùng xà phòng, hóa chất lau kính, nước lau sàn hoặc hóa chất có mùi mạnh gần nước cá.</li>
+<li>Sau khi vệ sinh mỗi bể, phải làm sạch/khử khuẩn dụng cụ theo SOP trước khi chuyển bể khác.</li>
+<li>Không rửa vật liệu sinh học bằng nước máy hoặc làm sạch toàn bộ hệ lọc cùng lúc nếu chưa có chỉ đạo kỹ thuật.</li>
+<li>Nếu khách đến trong lúc đang vệ sinh, phải dừng thao tác an toàn, khóa/đặt ống tránh rò và chỉ tiếp tục khi không còn nguy cơ quên bước.</li>
+<li>Người thực hiện phải tick checklist; người quản lý ca có quyền kiểm tra ngẫu nhiên.</li>
+</ol>
+</section>
+
+<section class="dieu" id="d9">
+<h2>Điều 9. An toàn điện, nước và thiết bị</h2>
+<ol>
+<li>Không chạm ổ điện, phích, dây điện hoặc thiết bị khi tay ướt hoặc đứng trên nền ướt.</li>
+<li>Trước khi rút nước phải tắt sưởi; trước khi tháo lọc/bơm phải cô lập nguồn điện theo hướng dẫn kỹ thuật.</li>
+<li>Không để bơm chạy cạn; không để mực nước ngăn bơm thấp hơn mức an toàn.</li>
+<li>Không để sưởi nổi, nứt, treo sai mức hoặc hoạt động khi không đủ nước.</li>
+<li>Không tự ý tháo bơm, sửa điện, đổi công suất, thay ống hoặc đấu nối thiết bị nếu chưa được phân quyền.</li>
+<li>Sau mọi thao tác thay nước/vệ sinh lọc phải kiểm tra dòng out, mực nước, rò rỉ và nguy cơ tràn.</li>
+<li>Khi phát hiện cháy, chập, mùi khét, nước tràn hoặc thiết bị bất thường: ngắt khu vực nếu an toàn, cảnh báo người xung quanh và gọi NVKT/CHT.</li>
+<li>Không đặt hàng hóa, thùng, xô hoặc dụng cụ trước tủ điện, lối thoát hiểm và khu vực thao tác khẩn cấp.</li>
+</ol>
+<p class="note">Các lỗi để bơm cạn, quên tắt sưởi, quên van cấp/thoát hoặc làm rơi ống đang hoạt động được xếp là nhóm rủi ro cao trong danh mục vi phạm nội bộ HPz.</p>
+</section>
+
+<section class="dieu" id="d10">
+<h2>Điều 10. Sử dụng hóa chất, thuốc và vật tư</h2>
+<ol>
+<li>Chỉ người được phân quyền mới được pha, cấp hoặc sử dụng thuốc/hóa chất.</li>
+<li>Mọi chai lọ phải có nhãn tên, mục đích, ngày mở, hướng dẫn và cảnh báo.</li>
+<li>Không trộn thuốc/hóa chất khác nhau nếu chưa có chỉ định chuyên môn.</li>
+<li>Không sử dụng thuốc hết hạn, mất nhãn, không rõ nguồn gốc hoặc không có hướng dẫn.</li>
+<li>Đeo bảo hộ phù hợp; không ăn uống trong khu pha/sử dụng hóa chất.</li>
+<li>Bảo quản hóa chất tách khỏi thức ăn cá, vật tư đóng gói và khu khách hàng.</li>
+<li>Khi đổ tràn hoặc tiếp xúc da/mắt, phải xử lý theo hướng dẫn an toàn sản phẩm và báo quản lý.</li>
+<li>Thuốc điều trị phải có nhật ký: bể, cá, triệu chứng, thuốc, liều theo nhãn, người duyệt, thời điểm và kết quả.</li>
+<li>Không đổ thuốc, nước bể bệnh hoặc hóa chất vào khu nước cycle hoặc bể khỏe.</li>
+</ol>
+</section>
+
+<section class="dieu" id="d11">
+<h2>Điều 11. Kho, vật tư và tài sản</h2>
+<ol>
+<li>Tài sản, cá, thiết bị, thuốc, thức ăn, phụ kiện và dữ liệu của showroom phải được sử dụng đúng mục đích.</li>
+<li>Xếp hàng đúng khu vực, nhãn và trạng thái: hàng mới, hàng khỏe, hàng chờ dưỡng, hàng bệnh, hàng lỗi, hàng chờ xuất.</li>
+<li>Áp dụng nguyên tắc nhập trước — xuất trước đối với hàng phù hợp; không tự ý đổi mã hoặc đổi vị trí.</li>
+<li>Mọi thiếu hụt, hư hỏng, hết vật tư hoặc sai lệch tồn kho phải báo ngay, không chờ đến kỳ kiểm kê.</li>
+<li>Không mang cá, thiết bị, thuốc, vật tư hoặc tài liệu ra khỏi showroom nếu chưa được phê duyệt.</li>
+<li>Không sử dụng tài sản showroom cho mục đích cá nhân hoặc cho mượn ngoài quy trình.</li>
+<li>Khi làm hỏng tài sản, phải báo trung thực ngay để xác định nguyên nhân; không tự ý sửa chữa làm mất hiện trạng.</li>
+<li>Việc bồi hoàn, nếu có, phải căn cứ hợp đồng, quy định pháp luật, mức độ lỗi, thiệt hại thực tế và quyết định đã được lập hồ sơ; không tự ý khấu trừ tùy tiện.</li>
+</ol>
+</section>
+
+<section class="dieu" id="d12">
+<h2>Điều 12. Báo cáo, bàn giao và lưu vết</h2>
+<ol>
+<li>Tất cả công việc quan trọng phải được ghi trên kênh chính thức: checklist, Todo Sheet, Sheet kỹ thuật, nhóm nội bộ hoặc biểu mẫu được chỉ định.</li>
+<li>Bàn giao ca tối thiểu gồm: việc đã làm, việc chưa làm, bể/thiết bị rủi ro, cá bệnh/cá chết, đơn hàng ưu tiên và người nhận.</li>
+<li>Không ghi &ldquo;đã xong&rdquo; khi chưa kiểm tra kết quả; không tick thay cho người khác.</li>
+<li>Báo cáo sự cố phải có thời điểm, địa điểm/bể, người phát hiện, mô tả, ảnh/video, số lượng ảnh hưởng, hành động đã làm và người tiếp nhận.</li>
+<li>Không xóa, sửa hoặc che giấu dữ liệu vận hành; nếu sửa phải giữ lịch sử hoặc ghi lý do sửa.</li>
+<li>Báo cáo ngày/tuần/tháng phải nộp đúng hạn theo phân công.</li>
+<li>Khi không chắc chắn về thông tin, phải ghi &ldquo;chưa xác minh&rdquo; và báo người có thẩm quyền, không suy đoán thành kết luận.</li>
+</ol>
+</section>
+
+<section class="dieu" id="d13">
+<h2>Điều 13. Bảo mật và sử dụng hình ảnh</h2>
+<ol>
+<li>Thông tin khách hàng, giá nhập, giá bán, nhà cung cấp, doanh thu, lương, dữ liệu cá, quy trình nội bộ và tài khoản quản trị là thông tin cần bảo mật.</li>
+<li>Không chia sẻ mật khẩu, link Sheet, ảnh đơn hàng hoặc tài liệu nội bộ ra ngoài nhóm được phân quyền.</li>
+<li>Không đăng bài, livestream, quay video trong showroom có khách, nhân sự, đơn hàng, địa chỉ hoặc thông tin nhạy cảm khi chưa được phê duyệt.</li>
+<li>Nội dung đăng tải thay mặt thương hiệu phải đúng nhận diện, giá, tình trạng cá và chính sách bán hàng.</li>
+<li>Khi nghỉ việc hoặc kết thúc cộng tác, phải bàn giao tài khoản, dữ liệu, chìa khóa, thiết bị và tài liệu; không giữ bản sao trái phép.</li>
+<li>Vi phạm bảo mật có thể được xử lý độc lập với lỗi vận hành nếu gây ảnh hưởng đến khách hàng hoặc thương hiệu.</li>
+</ol>
+</section>
+
+<section class="dieu" id="d14">
+<h2>Điều 14. Những hành vi bị nghiêm cấm</h2>
+<ul>
+<li>Gian dối về chấm công, checklist, tồn kho, số lượng cá chết, tình trạng cá hoặc đơn hàng.</li>
+<li>Che giấu sự cố bể, bơm, điện, sưởi, tràn nước, cá chết hoặc sai lệch tài sản.</li>
+<li>Tự ý dùng thuốc, hóa chất, chuyển cá, thay nước chuyên sâu hoặc sửa thiết bị ngoài quyền hạn.</li>
+<li>Cố ý làm hỏng, lấy cắp, chiếm giữ hoặc sử dụng tài sản showroom trái phép.</li>
+<li>Đe dọa, quấy rối, xúc phạm, phân biệt đối xử hoặc trả đũa người báo cáo sự cố trung thực.</li>
+<li>Tiết lộ dữ liệu khách hàng, giá vốn, tài liệu nội bộ hoặc thông tin bảo mật.</li>
+<li>Làm việc trong trạng thái say xỉn hoặc sử dụng chất gây ảnh hưởng an toàn.</li>
+<li>Dùng hình ảnh/cá/tài sản showroom cho mục đích cá nhân, quảng cáo cá nhân hoặc giao dịch riêng nếu chưa được phép.</li>
+</ul>
+</section>
+
+<section class="dieu" id="d15">
+<h2>Điều 15. Phân loại vi phạm</h2>
+<table class="c1">
+<tr><th>Cấp</th><th>Mô tả</th><th>Ví dụ</th></tr>
+<tr><td>C1 — Nhẹ</td><td>Sai sót lần đầu, chưa gây thiệt hại đáng kể, có thể khắc phục ngay</td><td>Đồ dùng sai vị trí, quên một mục vệ sinh, đi muộn không lý do</td></tr>
+<tr><td>C2 — Trung bình</td><td>Tái diễn hoặc làm giảm chất lượng vận hành, ảnh hưởng khách/cá nhưng chưa gây tổn thất lớn</td><td>Không vệ sinh khu vực, không báo cáo đúng hạn, mực nước thấp, không kiểm soát bông lọc</td></tr>
+<tr><td>C3 — Nặng</td><td>Vi phạm SOP có nguy cơ hoặc gây thiệt hại rõ ràng cho cá, thiết bị, khách hàng</td><td>Quên van làm cạn/tràn, chuyển cá không báo, quên tắt sưởi, làm bể bẩn nghiêm trọng</td></tr>
+<tr><td>C4 — Rất nặng</td><td>Gây thiệt hại lớn, rủi ro an toàn hoặc lặp lại vi phạm nặng</td><td>Để bơm cạn gây hỏng, che giấu sự cố lớn, làm thất thoát tài sản</td></tr>
+<tr><td>C5 — Đặc biệt nghiêm trọng</td><td>Gian dối, trộm cắp, cố ý phá hoại, xâm phạm dữ liệu hoặc gây tổn thất đặc biệt lớn</td><td>Chiếm đoạt tài sản, sửa/xóa dữ liệu để che giấu, tiết lộ dữ liệu nghiêm trọng</td></tr>
+</table>
+</section>
+
+<section class="dieu" id="d16">
+<h2>Điều 16. Nguyên tắc xử lý vi phạm</h2>
+<ol>
+<li>Xác minh sự việc dựa trên checklist, dữ liệu, ảnh, video, nhân chứng và giải trình của người liên quan.</li>
+<li>Cho nhân sự cơ hội giải trình trước khi kết luận, trừ trường hợp cần tạm thời cô lập để bảo đảm an toàn.</li>
+<li>Phân biệt lỗi cá nhân, lỗi hệ thống, lỗi đào tạo, lỗi phân công và sự kiện bất khả kháng.</li>
+<li>Ưu tiên khắc phục thiệt hại, bảo vệ cá và ngăn tái diễn trước khi áp dụng chế tài.</li>
+<li>Không xử phạt hai lần cho cùng một hành vi; các lỗi liên quan cùng một sự cố phải được đánh giá theo nguyên nhân gốc.</li>
+<li>Việc trừ điểm, hạ bậc, cảnh báo, tạm đình chỉ hoặc chấm dứt hợp tác phải được lập hồ sơ và do người có thẩm quyền quyết định.</li>
+<li>Hành vi tự nguyện báo sớm, hỗ trợ cứu cá, khắc phục và hợp tác điều tra có thể được xem là tình tiết giảm nhẹ.</li>
+<li>Hành vi che giấu, sửa dữ liệu, đổ lỗi hoặc không hợp tác có thể là tình tiết tăng nặng.</li>
+<li>Khi có thiệt hại tài sản, việc yêu cầu bồi hoàn phải căn cứ thiệt hại thực tế và quy định pháp luật/thoả thuận hợp lệ, không mặc nhiên quy toàn bộ cho người làm ca.</li>
+</ol>
+</section>
+
+<section class="dieu" id="d17">
+<h2>Điều 17. Khung chế tài nội bộ đề xuất</h2>
+<table class="c1">
+<tr><th>Mức độ</th><th>Biện pháp chính</th><th>Hồ sơ cần có</th></tr>
+<tr><td>C1</td><td>Nhắc nhở, hướng dẫn lại, ghi nhận vào theo dõi lỗi</td><td>Note/biên bản ngắn</td></tr>
+<tr><td>C2</td><td>Nhắc nhở bằng văn bản, đào tạo lại, trừ điểm chất lượng theo quy chế đã công bố</td><td>Phiếu vi phạm + kế hoạch khắc phục</td></tr>
+<tr><td>C3</td><td>Cảnh báo chính thức, tạm dừng thao tác kỹ thuật, đào tạo và đánh giá lại năng lực</td><td>Biên bản sự cố + CAPA</td></tr>
+<tr><td>C4</td><td>Tạm đình chỉ quyền thao tác/ca, xem xét trách nhiệm vật chất hợp lệ, đánh giá tiếp tục phân công</td><td>Biên bản điều tra + quyết định quản lý</td></tr>
+<tr><td>C5</td><td>Xử lý theo nội quy lao động/hợp đồng và pháp luật hiện hành; có thể chấm dứt hợp tác nếu đủ căn cứ</td><td>Hồ sơ đầy đủ, giải trình và quyết định có thẩm quyền</td></tr>
+</table>
+<p class="note">Không nên áp dụng cơ chế &ldquo;cộng dồn lỗi&rdquo; một cách máy móc khi chưa xác định lỗi có cùng tính chất, cùng thời gian và cùng nguyên nhân. Bảng C1–C5 trong file chế tài nội bộ nên được ban hành kèm định nghĩa rõ về điểm, thời hạn xóa lỗi, quyền giải trình và thẩm quyền phê duyệt.</p>
+</section>
+
+<section class="dieu" id="d18">
+<h2>Điều 18. Khen thưởng và ghi nhận</h2>
+<p style="margin-bottom:8px">Nhân sự có thể được ghi nhận khi:</p>
+<ul>
+<li>Chủ động phát hiện và ngăn sự cố trước khi gây thiệt hại.</li>
+<li>Báo cáo trung thực, đầy đủ và đúng thời gian.</li>
+<li>Duy trì checklist, chất lượng vệ sinh, chăm sóc cá và bàn giao tốt.</li>
+<li>Hỗ trợ đào tạo người mới hoặc đề xuất cải tiến có hiệu quả.</li>
+<li>Giữ hình ảnh chuyên nghiệp, phục vụ khách hàng tốt và phối hợp tích cực.</li>
+</ul>
+<p class="note">Khen thưởng phải dựa trên dữ liệu kiểm chứng, không chỉ dựa trên doanh số hoặc số lượng bài đăng; hoạt động bán hàng không được làm giảm chất lượng chăm sóc cá và an toàn showroom.</p>
+</section>
+
+<section class="dieu" id="d19">
+<h2>Điều 19. Quy trình tiếp nhận phản ánh nội bộ</h2>
+<ol>
+<li>Nhân sự có thể báo cáo trực tiếp quản lý, qua nhóm chính thức, biểu mẫu hoặc kênh bảo mật do HPz công bố.</li>
+<li>Phản ánh nên nêu sự kiện, thời điểm, người liên quan, bằng chứng và rủi ro; không bắt buộc phải tự kết luận lỗi.</li>
+<li>Nghiêm cấm trả đũa người phản ánh trung thực hoặc người tham gia xác minh.</li>
+<li>Quản lý phải phân loại mức độ, bảo vệ hiện trạng, xử lý khẩn cấp nếu cần và thông báo kết quả trong thời hạn phù hợp.</li>
+<li>Nếu phản ánh liên quan trực tiếp đến quản lý ca, phải chuyển lên cấp cao hơn hoặc người được chỉ định độc lập.</li>
+</ol>
+</section>
+
+<section class="dieu" id="d20">
+<h2>Điều 20. Đào tạo và xác nhận tuân thủ</h2>
+<ol>
+<li>Nhân sự mới phải được hướng dẫn nội quy, an toàn điện/nước, phân khu cá, sử dụng dụng cụ và cách báo sự cố trước khi làm độc lập.</li>
+<li>Nhân sự chỉ được thực hiện thao tác kỹ thuật nâng cao sau khi được đào tạo, quan sát thực hành và xác nhận năng lực.</li>
+<li>Định kỳ tổ chức nhắc lại nội quy, diễn tập tràn nước/mất điện/cá chết hàng loạt và kiểm tra hiểu biết.</li>
+<li>Mỗi nhân sự ký xác nhận đã đọc, hiểu và được giải thích nội quy; chữ ký không loại trừ quyền được giải trình hoặc quyền theo pháp luật.</li>
+<li>Nội quy phải được rà soát ít nhất mỗi 6 tháng hoặc ngay sau sự cố nghiêm trọng, thay đổi cơ cấu, thiết bị hoặc quy định pháp luật.</li>
+</ol>
+</section>
+
+</div>
+<footer>Bộ nội quy nội bộ Showroom HPz — bản cập nhật ngày 07/09/2026</footer>
+</div>
+</main>
 <script>
-document.querySelectorAll('nav.tabs a').forEach(function(a){
-  a.addEventListener('click',function(){
-    document.querySelectorAll('nav.tabs a').forEach(function(x){x.classList.remove('active')});
-    a.classList.add('active');
-  });
-});
+function showView(id){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active')});
+  document.getElementById('view-'+id).classList.add('active');
+  document.querySelectorAll('nav.tabs a').forEach(function(t){t.classList.remove('active')});
+  document.getElementById('tab-'+id).classList.add('active');
+}
+document.getElementById('tab-handbook').addEventListener('click',function(){showView('handbook')});
+document.getElementById('tab-noiquy').addEventListener('click',function(){showView('noiquy')});
+if(location.hash==='#noiquy'){showView('noiquy');}
 </script>
 </body>
 </html>
